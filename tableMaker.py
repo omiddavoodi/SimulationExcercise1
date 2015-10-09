@@ -6,11 +6,11 @@ class obj:
         self.starttime = None
         self.endtime = None
         self.queuetime = -1
+        self.servname = None
 
 class Pashmak():
     table = [0]
     tableLen = 0
-    index = 0
 
     def __init__(self, start=1, end=8):
         self.start = start
@@ -32,7 +32,7 @@ class Pashmak():
         while self.table[-1] < time:
             self.__makeTable()
 
-        for i in range(self.index, self.tableLen):
+        for i in range(self.tableLen):
             if time == self.table[i]:
                 ii = obj()
                 ii.queuetime = time

@@ -21,6 +21,7 @@ class simulation:
         self.pashmak = Pashmak(a, b)
         
     def nexttick(self):
+        workername = ''
         while (True):
             if (self.ableworking > 0):
                 self.ableworking -= 1
@@ -37,6 +38,7 @@ class simulation:
                     if (self.bakerworkingnow):
                         self.bakerworkingnow.endtime = self.tick
                         self.works.append(self.bakerworkingnow)
+
             if (self.tick < self.lasttick):
                 self.queue.extend(self.pashmak.queue(self.tick))
             
@@ -44,11 +46,13 @@ class simulation:
                 self.ableworking = self.ableworktime
                 self.ableworkingnow = self.queue.pop(0)
                 self.ableworkingnow.starttime = self.tick
+                self.ableworkingnow.servname = 'able'
             
             if (len(self.queue) > 0 and self.bakerworking == -1):
                 self.bakerworking = self.bakerworktime
                 self.bakerworkingnow = self.queue.pop(0)
                 self.bakerworkingnow.starttime = self.tick
+                self.bakerworkingnow.servname = 'baker'
             
             self.history.append((len(self.queue), self.ableworking, self.bakerworking))
             self.tick += 1
@@ -64,11 +68,29 @@ sim.bakerworktime = 10
 sim.initpashmak(0,10)
 sim.nexttick()
 
+
+able = {}
+baker = {}
+
 s = ""
 
 for i in sim.works:
-    s += ("Came:" + str(i.queuetime) + ", Started:" + str(i.starttime) + ", Finished:" + str(i.endtime) + ", Time:" + str(i.endtime - i.queuetime))
+    b = i.endtime - i.queuetime
+    s += ("Came:" + str(i.queuetime) + ", Started:" + str(i.starttime) + ", Finished:" + str(i.endtime) + ", Time:" + str(b) + ", service:" + i.servname)
     s += "\n"
+
+    if i.servname == 'able':
+        b -= sim.ableworktime
+        if b in able:
+            able[b] += 1
+        else:
+            able[b] = 1
+    else:
+        b -= sim.bakerworktime
+        if b in baker:
+            baker[b] += 1
+        else:
+            baker[b] = 1
 
 s2 = ""
 
@@ -87,3 +109,16 @@ f.close()
 f = open("s2.txt", 'w')
 f.write(s2)
 f.close()
+
+print(able)
+print(baker)
+
+a = open('s3.txt', 'w')
+for i in able:
+    a.write("%d\t%d\n" % (i, able[i]))
+a.close()
+
+a = open('s4.txt', 'w')
+for i in baker:
+    a.write("%d\t%d\n" % (i, baker[i]))
+a.close()
