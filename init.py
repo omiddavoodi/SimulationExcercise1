@@ -1,4 +1,4 @@
-import obmplib
+import obmplib, turtle
 from tableMaker import Pashmak
 
 class simulation:
@@ -61,7 +61,7 @@ class simulation:
                 break
 
 sim = simulation()
-sim.lasttick = 10000
+sim.lasttick = 1000
 sim.ableworktime = 5
 sim.bakerworktime = 10
 
@@ -72,12 +72,12 @@ sim.nexttick()
 able = {}
 baker = {}
 
-s = ""
+# s = ""
 
 for i in sim.works:
     b = i.endtime - i.queuetime
-    s += ("Came:" + str(i.queuetime) + ", Started:" + str(i.starttime) + ", Finished:" + str(i.endtime) + ", Time:" + str(b) + ", service:" + i.servname)
-    s += "\n"
+    # s += ("Came:" + str(i.queuetime) + ", Started:" + str(i.starttime) + ", Finished:" + str(i.endtime) + ", Time:" + str(b) + ", service:" + i.servname)
+    # s += "\n"
 
     if i.servname == 'able':
         b -= sim.ableworktime
@@ -92,33 +92,103 @@ for i in sim.works:
         else:
             baker[b] = 1
 
-s2 = ""
+# f = open("s1.txt", 'w')
+# f.write(s)
+# f.close()
 
-for i in sim.history:
-    kk = i[0]
-    if (i[1] != -1):
-        kk += 1
-    if (i[2] != -1):
-        kk += 1
-    s2 += str(kk) + "\n"
+# s2 = ""
 
-f = open("s1.txt", 'w')
-f.write(s)
-f.close()
+# for i in sim.history:
+#     kk = i[0]
+#     if (i[1] != -1):
+#         kk += 1
+#     if (i[2] != -1):
+#         kk += 1
+#     s2 += str(kk) + "\n"
 
-f = open("s2.txt", 'w')
-f.write(s2)
-f.close()
 
-print(able)
-print(baker)
 
-a = open('s3.txt', 'w')
-for i in able:
-    a.write("%d\t%d\n" % (i, able[i]))
-a.close()
+# f = open("s2.txt", 'w')
+# f.write(s2)
+# f.close()
 
-a = open('s4.txt', 'w')
-for i in baker:
-    a.write("%d\t%d\n" % (i, baker[i]))
-a.close()
+# print(able)
+# print(baker)
+
+# a = open('s3.txt', 'w')
+# for i in able:
+#     a.write("%d\t%d\n" % (i, able[i]))
+# a.close()
+
+# a = open('s4.txt', 'w')
+# for i in baker:
+#     a.write("%d\t%d\n" % (i, baker[i]))
+# a.close()
+
+# wn = turtle.Screen()
+# wn.delay(0)
+# wn.screensize(200, 200)
+# wn.setworldcoordinates(0, 0, 80, 80)
+# wn.exitonclick()
+
+
+def makeUnderLine(u):
+    p = t.pos()
+    while t.pos()[0] > -320:
+        t.bk(5)
+        t.pu()
+        t.bk(5)
+        t.pd()
+
+    t.write(str(u), align='left', font=('Times New Roman', 10))
+    t.pu()
+    t.goto(*p)
+    t.pd()
+
+t = turtle.Turtle()
+t.hideturtle()
+t.pensize(4)
+t.pu()
+t.goto(-300, -200)
+t.pd()
+t.fd(600)
+t.pu()
+t.goto(-300, -200)
+t.pd()
+t.goto(-300, +200)
+t.pu()
+t.pensize(2)
+t.pencolor('red')
+t.goto(-280, +180)
+t.write("Able", align='left', font=('Times New Roman',16))
+t.goto(-300, -200)
+t.pd()
+
+l1 = sorted(able.keys(), key=lambda x: x)
+l11 = sorted(able.keys(), key=lambda x: able[x])
+
+l2 = sorted(baker.keys(), key=lambda x: x)
+l22 = sorted(baker.keys(), key=lambda x: baker[x])
+
+d1 = 400 // max(able[l11[-1]], baker[l22[-1]])
+d2 = 600 // max(l1[-1], l2[-1])
+
+for i in l1:
+    t.goto(i * d2 - 280, able[i] * d1 - 200)
+    # makeUnderLine(able[i])
+    t.write(str((able[i], i)), align='left', font=('Times New Roman', 10))
+
+t.pu()
+t.pencolor('blue')
+t.goto(-240, +180)
+t.write("Baker", align='left', font=('Times New Roman', 16))
+t.goto(-300, -200)
+t.pd()
+
+for i in l2:
+    t.goto(i * d2 - 280, baker[i] * d1 - 200)
+    # makeUnderLine(baker[i])
+    t.write(str((baker[i], i)),align='left',font=('Times New Roman', 10))
+
+
+turtle.done()
