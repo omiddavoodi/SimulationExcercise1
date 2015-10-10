@@ -61,7 +61,7 @@ class simulation:
                 break
 
 sim = simulation()
-sim.lasttick = 1000
+sim.lasttick = 10000
 sim.ableworktime = 5
 sim.bakerworktime = 10
 
@@ -72,13 +72,29 @@ sim.nexttick()
 able = {}
 baker = {}
 
-# s = ""
+hpot = {}
+hpot2 = {}
+
+s = ""
+s3 = ""
 
 for i in sim.works:
     b = i.endtime - i.queuetime
-    # s += ("Came:" + str(i.queuetime) + ", Started:" + str(i.starttime) + ", Finished:" + str(i.endtime) + ", Time:" + str(b) + ", service:" + i.servname)
-    # s += "\n"
+    s += (str(b))
+    s += "\n"
+    s3 += (str(i.starttime - i.queuetime))
+    s3 += "\n"
+    if (hpot.get(i.starttime - i.queuetime)):
+        hpot[i.starttime - i.queuetime] += 1
+    else:
+        hpot[i.starttime - i.queuetime] = 1
 
+    if (hpot2.get(i.endtime - i.queuetime)):
+        hpot2[i.endtime - i.queuetime] += 1
+    else:
+        hpot2[i.endtime - i.queuetime] = 1
+
+    
     if i.servname == 'able':
         b -= sim.ableworktime
         if b in able:
@@ -92,38 +108,59 @@ for i in sim.works:
         else:
             baker[b] = 1
 
-# f = open("s1.txt", 'w')
-# f.write(s)
-# f.close()
+f = open("s1.txt", 'w')
+f.write(s)
+f.close()
 
-# s2 = ""
+f = open("s3.txt", 'w')
+f.write(s3)
+f.close()
 
-# for i in sim.history:
-#     kk = i[0]
-#     if (i[1] != -1):
-#         kk += 1
-#     if (i[2] != -1):
-#         kk += 1
-#     s2 += str(kk) + "\n"
+s4 = ""
+for i in hpot:
+    s4 += str(i) + '\t' + str(hpot[i]) + '\n'
+
+f = open("s4.txt", 'w')
+f.write(s4)
+f.close()
+
+s7 = ""
+for i in hpot2:
+    s7 += str(i) + '\t' + str(hpot2[i]) + '\n'
+
+f = open("s7.txt", 'w')
+f.write(s7)
+f.close()
+
+
+s2 = ""
+
+for i in sim.history:
+    kk = i[0]
+    if (i[1] != -1):
+        kk += 1
+    if (i[2] != -1):
+        kk += 1
+    s2 += str(kk) + "\n"
 
 
 
-# f = open("s2.txt", 'w')
-# f.write(s2)
-# f.close()
+f = open("s2.txt", 'w')
+f.write(s2)
+f.close()
 
 # print(able)
 # print(baker)
 
-# a = open('s3.txt', 'w')
-# for i in able:
-#     a.write("%d\t%d\n" % (i, able[i]))
-# a.close()
+a = open('s5.txt', 'w')
+for i in able:
+    a.write("%d\t%d\n" % (i, able[i]))
+a.close()
 
-# a = open('s4.txt', 'w')
-# for i in baker:
-#     a.write("%d\t%d\n" % (i, baker[i]))
-# a.close()
+a = open('s6.txt', 'w')
+for i in baker:
+    a.write("%d\t%d\n" % (i, baker[i]))
+a.close()
 
 # wn = turtle.Screen()
 # wn.delay(0)
@@ -146,6 +183,8 @@ def makeUnderLine(u):
     t.pd()
 
 t = turtle.Turtle()
+turtle.delay(0)
+t.speed(0)
 t.hideturtle()
 t.pensize(4)
 t.pu()
@@ -170,8 +209,8 @@ l11 = sorted(able.keys(), key=lambda x: able[x])
 l2 = sorted(baker.keys(), key=lambda x: x)
 l22 = sorted(baker.keys(), key=lambda x: baker[x])
 
-d1 = 400 // max(able[l11[-1]], baker[l22[-1]])
-d2 = 600 // max(l1[-1], l2[-1])
+d1 = 400 / max(able[l11[-1]], baker[l22[-1]])
+d2 = 600 / max(l1[-1], l2[-1])
 
 for i in l1:
     t.goto(i * d2 - 280, able[i] * d1 - 200)
@@ -187,6 +226,7 @@ t.pd()
 
 for i in l2:
     t.goto(i * d2 - 280, baker[i] * d1 - 200)
+    #print(i, baker[i])
     # makeUnderLine(baker[i])
     t.write(str((baker[i], i)),align='left',font=('Times New Roman', 10))
 
